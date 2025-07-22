@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Attendance | The Glorious Band</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <script src="js/firebase.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background: #f4f4f4;
+      text-align: center;
+    }
+    #reader {
+      width: 300px;
+      margin: auto;
+      padding: 1rem;
+      background: white;
+      border-radius: 8px;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>QR Code Attendance</h2>
+  <p>Scan your code below</p>
+  <div id="reader"></div>
+  <div id="status"></div>
+
+  <script>
+    // SET THIS TO MATCH THE CURRENT EVENT
+    const currentEventId = "Band_Rehearsal_2025";
+
+    function logAttendance(memberId) {
+  const timestamp = new Date();
+  const docId = ${memberId}_${currentEventId};
+
+  const docRef = db.collection("attendance").doc(docId);
+
+  docRef.get().then((docSnapshot) => {
+    if (docSnapshot.exists) {
+      document.getElementById("status").innerText =
+        ⚠ Attendance already recorded for ${memberId} at ${currentEventId};
+    } else {
+      docRef.set({
+        memberId: memberId,
+        eventId: currentEventId,
+        time: timestamp
+      }).then(() => {
+        document.getElementById("status").innerText =
+          ✅ Attendance recorded for ${memberId} at ${currentEventId};
+      }).catch(err => {
+        document.getElementById("status").innerText =
+          ❌ Error saving attendance: ${err.message};
+      });
+    }
+  }).catch(err => {
+    document.getElementById("status").innerText =
+      ❌ Error checking attendance: ${err.message};
+  });
+}
+
+    const html5QrCode = new Html5Qrcode("reader");
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      {
+        fps: 10,
+        qrbox: 250
+      },
+      qrCodeMessage => {
+        html5QrCode.stop(); // Stop after one scan
+        logAttendance(qrCodeMessage.trim());
+      },
+      errorMessage => {
+        // Silent errors while scanning
+      }
+    ).catch(err => {
+      document.getElementById("status").innerText =
+        "Failed to start QR scanner: " + err;
+    });
+  </script>
+</body>
+</html>
