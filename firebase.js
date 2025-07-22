@@ -1,18 +1,19 @@
 // js/firebase.js
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDtclqrh5_jHE-NWwoHCdTlPobX2axWfJA",
+  authDomain: "glorious-band-attendance.firebaseapp.com",
+  projectId: "glorious-band-attendance",
+  storageBucket: "glorious-band-attendance.firebasestorage.app",
+  messagingSenderId: "1005788266331",
+  appId: "1:1005788266331:web:bbec9a675512a2bd08a47e",
+  measurementId: "G-BCMJY4B7XB"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Initialize Firestore
-const db = firebase.firestore();
+// Make Firestore available globally
+window.db = firebase.firestore();
 
-// Set current event ID (you can access this from other scripts)
-const currentEventId = "Band_Rehearsal_2025";
+// Optional: expose currentEventId globally
+window.currentEventId = "Band_Rehearsal_2025";

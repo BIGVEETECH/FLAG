@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>QR Attendance | The Glorious Band</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
@@ -40,14 +41,14 @@
 
     function logAttendance(memberId) {
   const timestamp = new Date();
-  const docId = ${memberId}_${currentEventId};
+  const docId = `${memberId}_${currentEventId}`;
 
   const docRef = db.collection("attendance").doc(docId);
 
   docRef.get().then((docSnapshot) => {
     if (docSnapshot.exists) {
       document.getElementById("status").innerText =
-        ⚠ Attendance already recorded for ${memberId} at ${currentEventId};
+       ` ⚠ Attendance already recorded for ${memberId} at ${currentEventId};`
     } else {
       docRef.set({
         memberId: memberId,
@@ -55,15 +56,15 @@
         time: timestamp
       }).then(() => {
         document.getElementById("status").innerText =
-          ✅ Attendance recorded for ${memberId} at ${currentEventId};
+         ` ✅ Attendance recorded for ${memberId} at ${currentEventId};`
       }).catch(err => {
         document.getElementById("status").innerText =
-          ❌ Error saving attendance: ${err.message};
+         ` ❌ Error saving attendance: ${err.message};`
       });
     }
   }).catch(err => {
     document.getElementById("status").innerText =
-      ❌ Error checking attendance: ${err.message};
+      `❌ Error checking attendance: ${err.message};`
   });
 }
 
